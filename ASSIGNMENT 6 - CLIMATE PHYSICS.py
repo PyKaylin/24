@@ -1,0 +1,447 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# ## **EARTH CLIMATE PHYSICS MODEL**
+# 
+# Kaylin Shanahan
+# <br>
+# *26/01/2024*
+# 
+# ---
+# 
+# This is a python notebook which studies Earth's climate, with a simple climate physics model. In the following tasks, a simple climate physics model for Earth is simulated and used investigate Earth's equilibrium temperature. This model will consider temperature variations over Earth's orbit, simulate the dynamics of Earth's interaction with other planets in the solar system, the impact of greenhouse gases on Earth's temperature and radiative forcing. CO$_{2}$ concentration will also be modelled using data from Mace Head.
+# 
+# ---
+# 
+# Earth's equilibrium temperature is the average temperature of the Earth. It is calculated using energy balance with the sun and adding the heat trapping effects of greenhouse gases. The energy balance calculated by balancing the energy received from the sun with the energy radiated by the Earth. The following program will first carry out this simple calculation for a basic estimate of the average temperature of Earth, later considering the effects of the atmosphere for a more accurate model.
+# 
+# ---
+
+# ## TASK 1
+# ---
+# 
+# The following program determines the equilibrium temperature in a simplistic Earth climate physics model.
+# 
+# ---
+# 
+# The formulae necessary to create this model are:
+# 1. *Power Received By Earth From The Sun:* $ P_{in} = \frac{L_☉}{4 \pi D^{2}} \pi R^{2}_{E} $
+#     
+#     The terms used in this formula are:
+#     - $L_☉$: Luminosity of the sun
+#     - $R_{E}$: Radius of Earth
+#     - $D$: Distance from Earth to the sun
+#     - $\pi R^{2}_{E}$: Cross-sectional area of Earth
+# 
+# 
+# 2. *Stefan-Boltzmann Law:* $ P_{out} = 4 \pi R^{2}_{E} \sigma T^{4} $
+#     
+#     The terms used in this formula are:
+#     - $\sigma$: Stefan-Boltzmann constant
+#     - $4 \pi R^{2}_{E}$: Surface area of Earth
+#     - $T$: Temperature
+# 
+# ---
+# 
+# * Input constants
+# * Calculate incoming power and equilibrium temperature
+# * Output equilibrium temperature
+# 
+# ---
+
+# In[27]:
+
+
+# TASK 1
+# A program to calculate the value of the equilibrium temperature of a
+# simple model Earth
+# Tested with L_☉ = 3.828e26 Js^-1 and D = 1.496e11 m
+
+# Numpy is needed for calculations
+import numpy as np 
+
+# Input Constants
+sigma = 5.67e-8   # Stefan-Boltzmann constant in Wm^-2 K^-4
+L = 3.828e26      # Luminosity of the sun in J s^-1
+D = 1.496e11      # Distance from Earth to the sun in m
+R = 6371e3        # Radius of Earth in m
+pi = np.pi        # Pi constant
+
+# Calculate incoming power
+P_in = (L/(4*pi*(D**2)))*(pi*(R**2))   # Power in Watts
+
+# Calculate equilibrium temperature by rearranging outgoing power formula for T
+T_k = ((P_in)/(4*pi*(R**2)*sigma))**(1/4) # Temperature in Kelvin
+
+# Convert Kelvin to Celsius
+T_c = T_k - 273.15   # Temperature in Celsius
+
+# Output equilibrium temperature
+print("Incoming Power = {0:10.2e} Watts".format(P_in))
+print("Equilibrium Temperature = {0:10.5} Kelvin".format(T_k))
+print("Equilibrium Temperature = {0:10.3} Celsius".format(T_c))
+
+
+# ## TASK 2
+# ---
+# 
+# This model determines the range of temperatures expected over the orbit of the Earth, from perihelion to aphelion. Also included in this model, is the different efficiencies at absorbing and emitting radiation. The absorption efficiency of radiation is defined via albedo, for which Earth's average albedo is 0.3. 
+# 
+# ---
+# 
+# Updated formulae and values for this model are included below:
+# 
+# 1. *Power in:* $ P_{in} = S_o(1-\alpha)\pi R^{2}_{E}$
+#     The terms in this formula are:
+#     - $S_o$: Solar constant
+#         - The solar constant uses an average value of $D$ over the elliptical orbit of Earth
+#         - $S_o = L_☉ / 4 \pi D^2 = 1370 Wm^-2$
+#     - $\alpha$: albedo
+#         - $\alpha = 0.3$
+# 
+# 
+# 2. *Power out:* $P_{out} = 4 \pi R^{2}_{E} \epsilon \sigma T^4$
+#     The terms in this formula are:
+#     - $\epsilon$: emissitivity
+# 
+# ---
+# 
+# * Input constants
+# * Calculate perihelion and aphelion temperatures
+# * Output perihelion and aphelion temperatures
+# 
+# ---
+
+# In[66]:
+
+
+# TASK 2
+# A program to calculate the range of temperatures expected over the orbit of
+# a model Earth
+
+# Numpy is needed for calculations
+import numpy as np 
+
+# Input Constants
+D_p = 147098074e3   # Perihelion distance in m
+D_a = 152097701e3   # Aphelion distance in m
+a = 0.3             # Average albedo of Earth
+e = 1               # Emissitivty
+S_0 = 1370          # Solar constant in W m^-2
+
+# Calculate perihelion solar constant
+S_0_p = (3.828e26)/(4*pi*(D_p**2))
+
+# Calculate aphelion solar constant
+S_0_a = (3.828e26)/(4*pi*(D_a**2))
+
+# Calculate perihelion incoming power
+P_in_p = S_0_p*(1 - a)*pi*(R**2)   # Power in Watts
+
+# Calculate apelion incoming power
+P_in_a = S_0_a*(1 - a)*pi*(R**2)   # Power in Watts
+
+# Calculate perihelion temperature
+T_p = ((P_in_p)/(4*pi*(R**2)*e*sigma))**(1/4) # Temperature in Kelvin
+
+# Calculate aphelion temperature
+T_a = ((P_in_a)/(4*pi*(R**2)*e*sigma))**(1/4) # Temperature in Kelvin
+
+# Calculate temperature range
+T_range_k = T_p - T_a
+
+# Convert Kelvin to Celsius
+T_range_c = T_range_k - 273.15   # Temperature in Celsius
+
+# Output equilibrium temperature
+print("Perihelion Temperature = {0:10.5} Kelvin".format(T_p))
+print("Aphelion Temperature = {0:10.5} Kelvin".format(T_a))
+print("Temperature Range Over Earth's Orbit = {0:10.3} Kelvin".format(T_range_k))
+print("Temperature Range Over Earth's Orbit = {0:10.5} Celsius".format(T_range_c))
+
+
+# #### *COMMENTS:*
+# ---
+# 
+# The eccentricity of the orbit has a significant effect on the daily average temperature. This can be determined as the perihelion temperature value (256.74 K) is greater than the aphelioin temperature value (252.49 K). This means that the perihelion experiences higher temperatures as it is closer in proximity to the sun than the aphelion.
+# 
+# ---
+
+# In[67]:
+
+
+# TASK 2
+# A program to calculate the range of temperatures expected over the orbit of
+# a model Earth
+
+# Input Constants
+D_p = 147098074e3   # Perihelion distance in m
+D_a = 152097701e3   # Aphelion distance in m
+a = 0.3             # Average Earth albedo
+e = 1               # Emissitivty
+S_0 = 1370          # Solar constant in W m^-2
+
+# Calculate solar constant
+S_0 = (3.828e26)/(4*pi*(D**2))
+
+# Calculate incoming power
+P_in = S_o*(1 - a)*pi*(R**2)   # Power in Watts
+
+# Calculate temperature
+T = ((P_in)/(4*pi*(R**2)*e*sigma))**(1/4) # Temperature in Kelvin
+
+# Output equilibrium temperature
+print("Average Temperature Over Earth's Orbit = {0:10.7} Kelvin".format(T))
+
+
+# ## TASK 3
+# ---
+# 
+# In this further improved model, the equilibrium temperature for Venus, Earth and Mars is determined. The equilibrium temperature is then later compared to the measured average temperature. 
+# 
+# The values of $\epsilon$ are estimated for the cases of Earth and Venus, due to the greenhouse effect of these planet, which affect this value.
+# 
+# ---
+# 
+# * Input emissitivity, distance, albedo and average temperature values
+# * Calculate equilibrium temperature for Earth, Venus and Mars
+# * Output equilibrium temperature for Earth, Venus and Mars
+# 
+# ---
+
+# In[130]:
+
+
+# TASK 3
+# A program to calculate the equilibrium temperature for Venus, Earth and Mars
+
+# Input emissitivity values
+e_mars = 0.8                # Emissitivty of Mars
+e_earth_venus = 1           # Emissitivity of Earth and Venus
+e_earth_correct  = 0.611    # Emissitivity of Earth
+e_venus_correct = 0.01081   # Emissitivity of Venus
+
+# Input distance from sun in au values
+D_venus = 0.72*1.496e11   # Distance from sun to Venus in m
+D_earth = 1.00*1.496e11   # Distance from sun to Earth in m
+D_mars = 1.52*1.496e11    # Distance from sun to Mars in m
+
+# Input albedo values
+a_venus = 0.72   # Albedo of Venus
+a_earth = 0.3    # Albedo of Earth
+a_mars = 0.25    # Albedo of Mars
+
+# Calculate solar constants
+def S_0(D):
+    return (3.828e26)/(4*pi*(D**2))   # Formula for solar constant
+S_0_v = S_0(D_venus)
+S_0_e = S_0(D_earth)
+S_0_m = S_0(D_mars)
+
+# Calculate power in
+def P_in(S_0, a, R):
+    return S_0*(1 - a)*pi*(R**2)   # Formula for Power in
+P_in_v = P_in(S_0_v, a_venus, R)
+P_in_e = P_in(S_0_e, a_earth, R)
+P_in_m = P_in(S_0_m, a_mars, R)
+
+# Calculate equilibrium temperature
+def T(P_in, e, sigma):
+    return ((P_in)/(4*pi*(R**2)*e*sigma))**(1/4)   # Formula for equilibrium temperature
+T_v = T(P_in_v, e_earth_venus, sigma)
+T_e = T(P_in_e, e_earth_venus, sigma)
+T_m = T(P_in_m, e_mars, sigma)
+
+# Calculate the observed average temperature with correct emissitivity 
+T_v_correct = T(P_in_v, e_venus_correct, sigma)
+T_e_correct = T(P_in_e, e_earth_correct, sigma)
+
+# Output equilibrium temperature
+print("Earth Eqiulibrium Temperature = {0:10.5} Kelvin".format(T_e))
+print("Venus Equilibrium Temperature = {0:10.5} Kelvin".format(T_v))
+print("Mars Equilibrium Temperature = {0:10.5} Kelvin".format(T_m))
+
+# Output observed average temperature with correct emissitivity 
+print("Corrected Earth Eqiulibrium Temperature = {0:10.4} Kelvin".format(T_e_correct))
+print("Corrected Venus Equilibrium Temperature = {0:10.4} Kelvin".format(T_v_correct))
+
+
+# #### *COMMENTS:*
+# ---
+# 
+# ##### *Table of Equilibrium Temperature and Averge Temperature Values:*
+#  
+#  | $ Planet $ | $ Equilibrium $ $ Temperature $ | $ Average $ $ Temperature $ |
+#  | --- | --- | --- |
+#  | Earth | 254.59 K | 288 K |
+#  | Venus | 238.61 K | 740 K |
+#  | Mars | 222.14 K | 223 K |
+# 
+# Above is a table of the equilibrium temperatures compared with the measured average temperature for each planet. Seen in the table above, the equilibrium temperature values are lower than those observed, particularly in the case of Earth and Venus. As this model is a simplified one, not accounting for factors such as the greenhouse effects, it is expected that these values would be lower, as these factors would account for the additional warming needed for these temperatures to match. 
+# 
+# ---
+# 
+# - The correct emissitivity value of Earth is $\epsilon = 0.611$
+# 
+# - The correct emissitivity value of Venus is $\epsilon = 0.01081$
+# 
+# ---
+
+# ## TASK 4
+# ---
+# 
+# The radiative forcing and temperature change, caused by $CO_2$ crossing the 400 parts per million milestone recently, are determined in this model.
+# 
+# ---
+# 
+# In order to determine the effects of greenhouse concentration, radiative forcing is used to measure the change in trapped radiation due to a change in concentration from $C_0$ to $C$. The temperature change is related to the radiative forcing, as seen in the formulae listed below.
+# 
+# The formulae and values for this model are included below:
+# 
+# 1. *Radiative Forcing:* $ \delta F = A\ln(C/C_0) $
+#     
+#     The terms in this formula are:
+#     - $A$:  Radiative forcing parameter
+#         - $A$ = 5.35
+#     - $C_0$: Concentration of C from the year 1750
+#         - $C_0$ = 278 ppm
+# 
+# 
+# 2. *Temperature Change:* $ \Delta T = B \frac{T \Delta F}{S_0 (1 - \alpha)} $
+#     
+#     The terms in this formula are:
+#     - $B$:  Temperature change parameter
+#         - $B$ = 1.7
+# 
+# ---
+# 
+# * Input constant
+# * Calculate radiative forcing and temperature change
+# * Output radiative forcing and temperature change
+# 
+# ---
+
+# In[135]:
+
+
+# TASK 4
+# A program to calculate the radiative forcing and temperature change
+# caused by CO_2 rising above 400 ppm
+
+# Input Constants
+C_0 = 278           # Concentration of C0_2 in ppm (1750)
+C = 400             # Concentration of C0_2 in ppm (2019)
+A = 5.35            # Radiative forcing parameter
+B = 1.7             # Temperature change parameter
+S_0 = 1370          # Solar constant in W m^-2
+a = 0.3             # Average albedo of Earth
+T_avg_earth = 288   # Average observed average temperature of Earth in Kelvin
+
+# Calculate radiative forcing
+R_forcing = A*np.log(C/C_0)
+
+# Calculate temperature change
+T_change = B*((T_avg_earth*R_forcing)/(S_0*(1 - a)))
+
+# Output radiative forcing
+print("Radiative Forcing = {0:10.5} W m^-2".format(R_forcing))
+
+# Output temperature change
+print("Temperature Change = {0:10.5} Kelvin".format(T_change))
+
+
+# ## TASK 5
+# ---
+# 
+# This task involves the analysation of carbon dioxide concentration data, measured at NUI Galway’s Mace Head research station. This data is used to create a plot of $C0_2$ versus time and a plot of past modelled temperature versus time. This plots start from 1991 as a baseline, and are extrapolated to estimate possible $C0_2$ and temperature in 2050 based on current trends
+# 
+# ---
+# 
+# * Import macehead $C0_2$ data
+# * Output plots of $C0_2$ versus time and a plot of past modelled temperature versus time
+# * Output extrapolated plots of $C0_2$ and temperature versus timein 2050
+# 
+# ---
+
+# In[170]:
+
+
+# TASK 5
+# A program to plot $C0_2$ and temperature versus time
+
+# Matplotlib is needed for plotting
+import matplotlib.pyplot as plt 
+
+# Read the data from the file
+filename = 'macehead.txt'
+CO2 = []   # List to store CO2 and correlating
+temperature = []   # List to store temperature and correlating
+
+# Open file and read data
+with open(filename, 'r') as file:
+    for line in file:   # Read each line of file
+        if line.startswith('#') or not line.strip():   # Lines starting with'#'
+            continue  # Skips comments and empty lines
+        fields = line.split()   # Split the line into fields
+        time = int(fields[1])   # Extract time as an integer
+        C = float(fields[11])   # Extract CO2 as a float
+        temp = float(fields[12])   # Extract temperature as a float
+        CO2.append((time, C))   # Append time and CO2 values
+        temperature.append((time, temp))   # Append time and temperature values
+
+# Extract years and CO2 concentrations
+time = [entry[0] for entry in CO2]   # List of time values in years
+CO2 = [entry[1] for entry in CO2]   # List of CO2 concentrations
+temperatures = [entry[1] for entry in temperature]   # List of temperature
+
+# Plot CO2 concentration agaisnt time
+plt.figure(figsize=(10,5))   # Make the plot rectangular
+plt.plot(time, CO2, marker='o', linestyle="--", color="r", label='CO2 Concentration')   # Make plot 
+plt.title("$CO_{2}$ Concentration vs Time")   # Title the plot
+plt.xlabel("Time ($years$)")   # Label x-axis
+plt.ylabel("$CO_{2}$ Concentation ($ppm$)")   # Label y-axis
+plt.legend()   # Create legend for graph
+plt.grid()   # Create grid on graph
+plt.show()   # Display graph
+
+
+# In[172]:
+
+
+# Plot temperature against time
+plt.figure(figsize=(10,5))   # Make the plot rectangular
+plt.plot(time, temperatures, linestyle="--", color="b", label="Temperature")   # Make plot 
+plt.title("Temperature vs Time")   # Title the plot
+plt.xlabel("Time ($years$)")   # Label x-axis
+plt.ylabel("Temperature ($C$)")   # Label y-axis
+plt.legend()   # Create legend for graph
+plt.grid()   # Create grid on graph
+plt.show()   # Display graph
+
+
+# In[192]:
+
+
+# Creae array for time
+years = np.array(time)
+
+# Fit linear reression models
+CO2_regression = np.polyfit(years, CO2, 1)
+temp_regression = np.polyfit(years, temperatures, 1)
+
+# Extrapolate to 2050
+extrap_time = 2050
+extrap_CO2 = np.polyval(CO2_regression, future_time)
+extrap_temp = np.polyval(temp_regression, future_time)
+
+# Extrapolation plot
+plt.figure(figsize=(10,5))   # Make the plot rectangular
+plt.plot(time, CO2, 'o', linestyle='-', label='Current Data')   # Make plot 
+plt.plot(future_time, future_CO2, 'ro', label='2050 Data')   # Make plot 
+plt.title("$CO_2$ Concentration vs Temperature")   # Title the plot
+plt.xlabel("Time (years)")   # Label x-axis
+plt.ylabel("$CO2$ Concentration Change from 1991 (ppm)")   # Label y-axis
+plt.legend()   # Create legend for graph
+plt.grid()   # Create grid on graph
+plt.show()   # Display graph
+
