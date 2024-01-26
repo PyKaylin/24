@@ -9,7 +9,7 @@
 # 
 # ---
 # 
-# This is a python notebook which studies Earth's climate, with a simple climate physics model. In the following tasks, a simple climate physics model for Earth is simulated and used investigate Earth's equilibrium temperature. This model will consider temperature variations over Earth's orbit, simulate the dynamics of Earth's interaction with other planets in the solar system, the impact of greenhouse gases on Earth's temperature and radiative forcing. CO$_{2}$ concentration will also be modelled using data from Mace Head.
+# This is a python notebook which studies Earth's climate with a simple climate physics model. In the following tasks, a simple climate physics model for Earth is simulated and used investigate Earth's equilibrium temperature. This model will consider temperature variations over Earth's orbit, simulate the dynamics of Earth's interaction with other planets in the solar system, the impact of greenhouse gases on Earth's temperature and radiative forcing. CO$_{2}$ concentration will also be modelled using data from Mace Head.
 # 
 # ---
 # 
@@ -353,7 +353,7 @@ print("Temperature Change = {0:10.5} Kelvin".format(T_change))
 # ## TASK 5
 # ---
 # 
-# This task involves the analysation of carbon dioxide concentration data, measured at NUI Galway’s Mace Head research station. This data is used to create a plot of $C0_2$ versus time and a plot of past modelled temperature versus time. This plots start from 1991 as a baseline, and are extrapolated to estimate possible $C0_2$ and temperature in 2050 based on current trends
+# This task involves the analysis of carbon dioxide concentration data measured at NUI Galway’s Mace Head research station. This data is used to create a plot of $C0_2$ versus time and a plot of past modelled temperature versus time.
 # 
 # ---
 # 
@@ -417,31 +417,3 @@ plt.ylabel("Temperature ($C$)")   # Label y-axis
 plt.legend()   # Create legend for graph
 plt.grid()   # Create grid on graph
 plt.show()   # Display graph
-
-
-# In[192]:
-
-
-# Creae array for time
-years = np.array(time)
-
-# Fit linear reression models
-CO2_regression = np.polyfit(years, CO2, 1)
-temp_regression = np.polyfit(years, temperatures, 1)
-
-# Extrapolate to 2050
-extrap_time = 2050
-extrap_CO2 = np.polyval(CO2_regression, future_time)
-extrap_temp = np.polyval(temp_regression, future_time)
-
-# Extrapolation plot
-plt.figure(figsize=(10,5))   # Make the plot rectangular
-plt.plot(time, CO2, 'o', linestyle='-', label='Current Data')   # Make plot 
-plt.plot(future_time, future_CO2, 'ro', label='2050 Data')   # Make plot 
-plt.title("$CO_2$ Concentration vs Temperature")   # Title the plot
-plt.xlabel("Time (years)")   # Label x-axis
-plt.ylabel("$CO2$ Concentration Change from 1991 (ppm)")   # Label y-axis
-plt.legend()   # Create legend for graph
-plt.grid()   # Create grid on graph
-plt.show()   # Display graph
-
